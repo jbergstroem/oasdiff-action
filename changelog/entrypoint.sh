@@ -20,17 +20,28 @@ write_output () {
     echo "$output" >>"$GITHUB_OUTPUT"
 }
 
+validate_format() {
+  local -a output_formats=(githubactions html json junit markup singleline text yaml)
+  for f in "${output_formats[@]}"; do
+    [[ "${f}" == "${1}" ]] && return 0
+  done
+  return 1
+}
+
 readonly base="$1"
 readonly revision="$2"
 readonly include_path_params="$3"
 readonly exclude_elements="$4"
 readonly composed="$5"
 readonly output_to_file="$6"
+readonly format="$7"
 
-echo "running oasdiff changelog base: $base, revision: $revision, include_path_params: $include_path_params, exclude_elements: $exclude_elements, composed: $composed, output_to_file: $output_to_file"
+echo "running oasdiff changelog base: $base, revision: $revision, include_path_params: $include_path_params, exclude_elements: $exclude_elements, composed: $composed, output_to_file: $output_to_file, format: $format"
 
 # Build flags to pass in command
-flags=""
+validate_format $format || { echo "Invalid format: ${format}" >&2; exit 1; }
+
+flags="--format $format"
 if [ "$include_path_params" = "true" ]; then
     flags="$flags --include-path-params"
 fi
@@ -69,4 +80,3 @@ fi
 echo "$delimiter" >>"$GITHUB_OUTPUT"
 
 # *** github action step output ***
-

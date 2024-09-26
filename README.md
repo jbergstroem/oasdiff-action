@@ -69,4 +69,5 @@ Additional arguments:
 | --include-path-params | include-path-params | false   |
 | --exclude-elements    | exclude-elements    | ''      |
 | --composed            | composed            | false   |
+| --format              | format              | text    |
 | N/A                   | output-to-file      | ''      |
